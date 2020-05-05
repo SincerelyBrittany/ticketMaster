@@ -30,9 +30,12 @@
           venueZipcode: post["_embedded"]["venues"][0]["postalCode"], #zipcode
           venueCountry: post["_embedded"]["venues"][0]["country"]["countryCode"] # "US"
         }
+
         array << new_hash
         end
         #binding.pry
+        TicketMasterApp::TicketMasterScraper.mass_create_from_api(array)
+
       end
 
       def self.ticketmasterEventSearch
