@@ -11,7 +11,7 @@ class TicketMasterApp::TicketMasterScraper
         @@search_array
     end
 
-    def self.mass_create_from_api(results_array)
+    def self.mass_create_from_api(results_array, from_input_search: false)
         results_array.each do |newshash|
             new(
                 newshash[:name],
@@ -22,9 +22,11 @@ class TicketMasterApp::TicketMasterScraper
                 newshash[:venueCity],
                 newshash[:venueCountry],
                 newshash[:venueState],
-                newshash[:venueZipcode])
+                newshash[:venueZipcode],
+                from_input_search: from_input_search)
         end
-        binding.pry
+        # binding.pry
+
     end
 
     # def self.get_articles(input)
@@ -48,11 +50,17 @@ class TicketMasterApp::TicketMasterScraper
     attr_accessor   :name, :type, :status, :genre,
       :venueName,:venueCity, :venueCountry, :venueState, :venueZipcode
 
-    def initialize(name, type, status, genre,venueName, venueCity,venueCountry, venueState, venueZipcode)
+    def initialize(name, type, status, genre,venueName, venueCity,venueCountry, venueState, venueZipcode, from_input_search:)
 
       @name, @type, @status, @genre, @venueName, @venueCity, @venueCountry, @venueState, @venueZipcode =
       name, type, status, genre, venueName, venueCity, venueCountry, venueState, venueZipcode
       save
+
+      if from_input_search == true
+        save_to_search
+      else from_input_search == false
+        save
+      end
 
     end
 
@@ -61,8 +69,69 @@ class TicketMasterApp::TicketMasterScraper
    end
 
    def name
-       @title.capitalize
+       @name.capitalize
    end
+
+   STATE_ABBR_TO_NAME = {
+    'AL' => 'Alabama',
+    'AK' => 'Alaska',
+    'AS' => 'America Samoa',
+    'AZ' => 'Arizona',
+    'AR' => 'Arkansas',
+    'CA' => 'California',
+    'CO' => 'Colorado',
+    'CT' => 'Connecticut',
+    'DE' => 'Delaware',
+    'DC' => 'District of Columbia',
+    'FM' => 'Federated States Of Micronesia',
+    'FL' => 'Florida',
+    'GA' => 'Georgia',
+    'GU' => 'Guam',
+    'HI' => 'Hawaii',
+    'ID' => 'Idaho',
+    'IL' => 'Illinois',
+    'IN' => 'Indiana',
+    'IA' => 'Iowa',
+    'KS' => 'Kansas',
+    'KY' => 'Kentucky',
+    'LA' => 'Louisiana',
+    'ME' => 'Maine',
+    'MH' => 'Marshall Islands',
+    'MD' => 'Maryland',
+    'MA' => 'Massachusetts',
+    'MI' => 'Michigan',
+    'MN' => 'Minnesota',
+    'MS' => 'Mississippi',
+    'MO' => 'Missouri',
+    'MT' => 'Montana',
+    'NE' => 'Nebraska',
+    'NV' => 'Nevada',
+    'NH' => 'New Hampshire',
+    'NJ' => 'New Jersey',
+    'NM' => 'New Mexico',
+    'NY' => 'New York',
+    'NC' => 'North Carolina',
+    'ND' => 'North Dakota',
+    'OH' => 'Ohio',
+    'OK' => 'Oklahoma',
+    'OR' => 'Oregon',
+    'PW' => 'Palau',
+    'PA' => 'Pennsylvania',
+    'PR' => 'Puerto Rico',
+    'RI' => 'Rhode Island',
+    'SC' => 'South Carolina',
+    'SD' => 'South Dakota',
+    'TN' => 'Tennessee',
+    'TX' => 'Texas',
+    'UT' => 'Utah',
+    'VT' => 'Vermont',
+    'VI' => 'Virgin Island',
+    'VA' => 'Virginia',
+    'WA' => 'Washington',
+    'WV' => 'West Virginia',
+    'WI' => 'Wisconsin',
+    'WY' => 'Wyoming'
+  }
 
   def save
       @@all << self
@@ -73,6 +142,7 @@ class TicketMasterApp::TicketMasterScraper
   end
 
   def self.destroy_all
+      @@all = []
       @@search_array = []
   end
 
