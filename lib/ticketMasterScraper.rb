@@ -2,66 +2,6 @@ class TicketMasterApp::TicketMasterScraper
   @@all = []
   @@search_array = []
 
-  STATE_ABBR_TO_NAME = {
-   'AL' => 'Alabama',
-   'AK' => 'Alaska',
-   'AS' => 'America Samoa',
-   'AZ' => 'Arizona',
-   'AR' => 'Arkansas',
-   'CA' => 'California',
-   'CO' => 'Colorado',
-   'CT' => 'Connecticut',
-   'DE' => 'Delaware',
-   'DC' => 'District of Columbia',
-   'FM' => 'Federated States Of Micronesia',
-   'FL' => 'Florida',
-   'GA' => 'Georgia',
-   'GU' => 'Guam',
-   'HI' => 'Hawaii',
-   'ID' => 'Idaho',
-   'IL' => 'Illinois',
-   'IN' => 'Indiana',
-   'IA' => 'Iowa',
-   'KS' => 'Kansas',
-   'KY' => 'Kentucky',
-   'LA' => 'Louisiana',
-   'ME' => 'Maine',
-   'MH' => 'Marshall Islands',
-   'MD' => 'Maryland',
-   'MA' => 'Massachusetts',
-   'MI' => 'Michigan',
-   'MN' => 'Minnesota',
-   'MS' => 'Mississippi',
-   'MO' => 'Missouri',
-   'MT' => 'Montana',
-   'NE' => 'Nebraska',
-   'NV' => 'Nevada',
-   'NH' => 'New Hampshire',
-   'NJ' => 'New Jersey',
-   'NM' => 'New Mexico',
-   'NY' => 'New York',
-   'NC' => 'North Carolina',
-   'ND' => 'North Dakota',
-   'OH' => 'Ohio',
-   'OK' => 'Oklahoma',
-   'OR' => 'Oregon',
-   'PW' => 'Palau',
-   'PA' => 'Pennsylvania',
-   'PR' => 'Puerto Rico',
-   'RI' => 'Rhode Island',
-   'SC' => 'South Carolina',
-   'SD' => 'South Dakota',
-   'TN' => 'Tennessee',
-   'TX' => 'Texas',
-   'UT' => 'Utah',
-   'VT' => 'Vermont',
-   'VI' => 'Virgin Island',
-   'VA' => 'Virginia',
-   'WA' => 'Washington',
-   'WV' => 'West Virginia',
-   'WI' => 'Wisconsin',
-   'WY' => 'Wyoming'
- }
 
     def self.all
         @@all
@@ -86,16 +26,9 @@ class TicketMasterApp::TicketMasterScraper
                 newshash[:venueZipcode],
                 from_input_search: from_input_search)
         end
-        binding.pry
+        #binding.pry
 
     end
-
-    # def self.get_articles(input)
-    #    @@all.map do |x|
-    #      if x.title.start_with?(input)
-    #        input
-    #    end
-    # end
 
     def self.get_articles(input)
       @@all.map do |x|
@@ -155,13 +88,19 @@ class TicketMasterApp::TicketMasterScraper
  def full_details
 
         <<-DESC
-        TITLE: #{title}
 
-        DESCRIPTION: #{description}
+        TITLE: #{name}
 
-        CONTENT: #{content}
+        TYPE: #{type}
 
-        URL TO ARTICLE : #{url}
+        STATUS: #{status}
+
+        GENRE : #{genre}
+
+        NAME OF VENUE: #{venueName}
+
+        VENUE CITY: #{venueCity}
+
        DESC
 
   end

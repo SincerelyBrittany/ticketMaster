@@ -3,15 +3,16 @@
 
       BASE_URL = 'https://app.ticketmaster.com/discovery/v2/events'
 
-      def self.eventList #page,pageSize) #uses the NET::HTTP library to send an HTTP request from our program
+      def self.eventList(state_code, page, pageSize)#page,pageSize) #uses the NET::HTTP library to send an HTTP request from our program
           #https://app.ticketmaster.com/discovery/v2/events?apikey=Q50bxg9zWmnG1pun2XaPknPeO9n6m5JL&locale=*&page=1
 
-          url = BASE_URL + "?&stateCode=NY" + API_KEY  #+ "&page=#{page}" + "&pageSize=#{pageSize}"
+          url = BASE_URL + "?&stateCode=#{state_code}" + API_KEY + + "&page=#{page}" + "&pageSize=#{pageSize}" #+ "&page=#{page}" + "&pageSize=#{pageSize}"
           uri = URI.parse(url)
           response = Net::HTTP.get_response(uri) #NET::HTTP is a Ruby library that allows your program or application to send HTTP requests.
           res = JSON.parse(response.body)
           posts = res["_embedded"]["events"]#articles is an array
           # names = posts[0]["name"]
+          return false if posts == nil
           array =[]
           posts.each do |post|
             new_hash = {
@@ -33,10 +34,14 @@
 
         array << new_hash
         end
-        #binding.pry
-        TicketMasterApp::TicketMasterScraper.mass_create_from_api(array, from_input_search: false)
+        if array.length > 0 #if array length is more than zero then return mass_create_from_api
+          TicketMasterApp::TicketMasterScraper.mass_create_from_api(array, from_input_search: false)
+       end
+        return array.length > 0
+        end
 
-      end
+
+
 
       def self.ticketmasterEventSearch
       #
