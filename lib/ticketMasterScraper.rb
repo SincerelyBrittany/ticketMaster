@@ -19,6 +19,7 @@ class TicketMasterApp::TicketMasterScraper
                 newshash[:type],
                 newshash[:status],
                 newshash[:genre],
+                newshash[:date],
                 newshash[:venueName],
                 newshash[:venueCity],
                 newshash[:venueCountry],
@@ -41,13 +42,13 @@ class TicketMasterApp::TicketMasterScraper
     end
 
 
-    attr_accessor   :name, :type, :status, :genre,
+    attr_accessor   :name, :type, :status, :genre, :date,
       :venueName,:venueCity, :venueCountry, :venueState, :venueZipcode
 
-    def initialize(name, type, status, genre,venueName, venueCity,venueCountry, venueState, venueZipcode, from_input_search:)
+    def initialize(name, type, status, genre, date, venueName, venueCity,venueCountry, venueState, venueZipcode, from_input_search:)
 
-      @name, @type, @status, @genre, @venueName, @venueCity, @venueCountry, @venueState, @venueZipcode =
-      name, type, status, genre, venueName, venueCity, venueCountry, venueState, venueZipcode
+      @name, @type, @status, @genre, @date, @venueName, @venueCity, @venueCountry, @venueState, @venueZipcode =
+      name, type, status, genre, date, venueName, venueCity, venueCountry, venueState, venueZipcode
       save
 
       if from_input_search == true
@@ -66,8 +67,6 @@ class TicketMasterApp::TicketMasterScraper
        @name.capitalize
    end
 
-
-
   def save
       @@all << self
   end
@@ -81,9 +80,9 @@ class TicketMasterApp::TicketMasterScraper
       @@search_array = []
   end
 
-  def more?
-       !!@description
-  end
+  # def more?
+  #      !!@description
+  # end
 
  def full_details
 
@@ -94,6 +93,8 @@ class TicketMasterApp::TicketMasterScraper
         TYPE: #{type}
 
         STATUS: #{status}
+
+        Date: #{date}
 
         GENRE : #{genre}
 

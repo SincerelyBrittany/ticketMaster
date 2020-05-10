@@ -10,7 +10,8 @@ class TicketMasterApp::CLI
        @page = 1
        @count = 1
        @pageSize = 20
-       @state_input
+       # @state_input = nil
+       @state_code= nil
        @user_query_search_input = nil
        @from_search = nil
   end
@@ -31,6 +32,7 @@ class TicketMasterApp::CLI
     puts "-----------------------------------------------------"
     puts "Type ‘1’ Search for Events by State"
     puts "Type ‘2’ to Search by events  "
+    puts "Type ‘3’ to Search by events  "
     puts "Type ‘exit’ to exit program"
     puts "Type 'credits' for credits"
     user_input = gets.strip.downcase
@@ -41,10 +43,17 @@ class TicketMasterApp::CLI
     if user_input == "1"
       @from_search = false
       find_state_code
+      get_data
       ticketmaster_options_loop
     elsif user_input == "2"
       @from_search = true
       get_query_input
+      query_selection
+      ticketmaster_options_loop
+    elsif user_input == "3"
+      @from_search = true
+      get_query_input
+      find_state_code
       query_selection
       ticketmaster_options_loop
     elsif user_input == "exit" #MUST GET TO WORK
@@ -58,16 +67,10 @@ class TicketMasterApp::CLI
     end
   end
 
-  # def get_news_data
-  #     if !TicketMasterApp::APIManager.eventList(@page,@pageSize)
-  #       puts "There is no page #{@page} -- returning to page #{@page - 1}"
-  #       sleep(1)
-  #       @page -= 1
-  #     end
-  # end
-
   def get_data
-      if !TicketMasterApp::APIManager.eventList(@state_input, @page, @pageSize)
+      if !TicketMasterApp::APIManager.eventList(@state_code, @page, @pageSize)
+      # TicketMasterApp::APIManager.eventList(@state_code, @page, @pageSize)
+      #   binding.pry
         puts "There is no page #{@page} -- returning to page #{@page - 1}"
         sleep(1)
         @page -= 1
@@ -80,7 +83,8 @@ class TicketMasterApp::CLI
   end
 
   def query_selection
-      if !TicketMasterApp::APIManager.seach_by_query(@user_query_search_input, @page, @pageSize)
+      if !TicketMasterApp::APIManager.ticketmasterEventSearch(@user_query_search_input, @state_code, @page, @pageSize)
+        binding.pry
         puts "There is no page #{@page} -- returning to page #{@page - 1}"
         sleep(1)
         @page -= 1
@@ -106,7 +110,7 @@ class TicketMasterApp::CLI
               if x.downcase == input || y.downcase == input
               puts "#{x.upcase}"
               @state_code = x.upcase
-              get_data
+              # binding.pry
             end #end of each
           end #end of if
         end #end of unless
@@ -180,7 +184,6 @@ class TicketMasterApp::CLI
 
   def display_article(i)
       if @from_search == false
-        binding.pry
       start, stop = get_page_range
       a = TicketMasterApp::TicketMasterScraper.all[start...stop][i]
       puts a.full_details
@@ -224,17 +227,20 @@ class TicketMasterApp::CLI
     def get_page_range
 
       [(@page - 1) * @pageSize, @page * @pageSize]
-
+      binding.pry
     end
 
     def display_articles
         if @from_search == true
+          # binding.pry
         start, stop = get_page_range
+       #binding.pry
         puts "\n\nPAGE #{@page} of your search for #{@user_query_search_input.capitalize}"
           TicketMasterApp::TicketMasterScraper.search_array[start...stop].each.with_index do |p,i|
             puts "#{i+1}. #{p}"
           end
         else @from_search == false
+          #binding.pry
           start, stop = get_page_range
           puts "\n\nPAGE #{@page}"
           TicketMasterApp::TicketMasterScraper.all[start...stop].each.with_index do |p,i|
